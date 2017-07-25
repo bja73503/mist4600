@@ -30,6 +30,7 @@ public class Room
      */
     public Room(boolean walkers, String description) 
     {
+        this.walkers = walkers;
         this.description = description;
         exits = new HashMap<String, Room>();
         //items = new HashMap<String,Item>();
@@ -63,7 +64,7 @@ public class Room
      */
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString() + ".\n" + getItemString();
+        return description + ".\n" + getExitString() + ".\n" + getItemString();
         
         //^^^ going to need to workshop this; set non-sig. rooms to null and manually enter descriptions for 
         // sig. rooms (e.g. c1, d3, etc.) -Pat
@@ -87,14 +88,15 @@ public class Room
     private String getItemString()
     {
         if (hasItem() == true) {
-        String returnString = "Items:";
+        return "Items: " + roomItem.getName();
+            // String returnString = "Items:";
         // Set<String> keys = items.keySet();
         // for(String item : keys) {
             // returnString += " " + item;
         // }
         
-       System.out.print(roomItem.getName());
-        return returnString;
+       // System.out.print(roomItem.getName());
+        // return returnString;
         } else {
             return "No useful items here";
         }

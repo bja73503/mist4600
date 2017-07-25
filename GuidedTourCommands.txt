@@ -1,0 +1,1 @@
+go west go west enter cave go east go south go east take boots go west go south go west go south take cloak go south go east go east pray go west go south go south

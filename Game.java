@@ -32,7 +32,6 @@ public class Game
         parser = new Parser();
         usersInventory = new ArrayList<Item>();
         
-        
     }
 
     /**
@@ -75,7 +74,10 @@ public class Game
         g2 = new Room(false,"You are in a snowy clearing surronded by trees and brush");
         g3 = new Room(false,"You surronded by trees, and there seem to be mountains to your west.");
         g4 = new Room(false,"Before you is the opening to a cave.");
-       
+        
+        // add rooms to global ArrayList rooms
+        //rooms.add(a2,a3,b2,b3,b4,c1,c2,c3,c4,d1,d3,e2,e3,e4,f1,f2,f3,g1,g2,g3,g4);
+
         // declair and set items 
         cloak = new Item("cloak", "a special black cloak that helps to hide you from white walkers.", 3);
         boots = new Item("boots", "special boots that help to hide your tracks in the snow.", 3);
@@ -85,7 +87,7 @@ public class Game
         
         // initialise room exits
         a3.setExit("east",a2);
-        a3.setExit("south",b3);
+        a3.setExit("north",b3);
         
         b2.setExit("south",a2);
         b2.setExit("west",b3);
@@ -110,7 +112,7 @@ public class Game
         c3.setExit("south",b3);
         c3.setExit("north",d3);
         c3.setExit("west",c4);
-        c3.setExit("east",c4);
+        c3.setExit("east",c2);
         
         c4.setExit("south",b4);
         c4.setExit("east",c3);
@@ -176,6 +178,11 @@ public class Game
         }
         System.out.println("Thank you for playing.  Good bye.");
     }
+    
+    public void playDemo() 
+    {            
+        printWelcome();
+    }
 
     /**
      * Print out the opening message for the player.
@@ -195,7 +202,7 @@ public class Game
      * @param command The command to be processed.
      * @return true If the command ends the game, false otherwise.
      */
-    private boolean processCommand(Command command) 
+    public boolean processCommand(Command command) 
     {
         boolean wantToQuit = false;
 
@@ -212,7 +219,6 @@ public class Game
             goRoom(command);
         }
         else if (commandWord.equals("look")) {
-            currentRoom.look(command);
             System.out.println(currentRoom.getLongDescription());
         }
         else if (commandWord.equals("quit")) {
@@ -272,10 +278,10 @@ public class Game
         }
         else {
             currentRoom = nextRoom;
-            //walkerEncounter();
             if (currentRoom.hasWalkers() == true) {
                 walkerEncounter();
-            }         
+            }
+
             System.out.println(currentRoom.getLongDescription());
         }
         
@@ -308,8 +314,7 @@ public class Game
                 System.out.println("There is nothing to take in this area.");            
             }
             else {
-                Item rooItem = currentRoom.getItem();
-                if (command.getSecondWord().equals(currentRoom.getItem())) {
+                if (command.getSecondWord().equals(currentRoom.getItem().getName())) {
                     Item thisItem = currentRoom.getItem();
                     usersInventory.add(thisItem);
                     
@@ -324,7 +329,13 @@ public class Game
     private void sneak(Command command)
     {
         if (!command.hasSecondWord()) {
-            sneakCheck();
+            if (currentRoom.hasWalkers() == true) {
+                System.out.println("You attempt to sneak. . . ");
+                sneakCheck();
+                
+            } else {
+                System.out.println("There's nothing to hide from here.");
+            }
         } else {
             System.out.println("What do you want to do?");
         }
@@ -348,11 +359,9 @@ public class Game
             System.out.println("Enter what?");
         } else if (command.getSecondWord().equals("cave") && currentRoom.getShortDescription().equals("Before you is the opening to a cave.")) {
             System.out.println("You enter the cave and travel through the darkness for a while.");
-            System.out.println("When you exit the cave, you are in a thinly wooded area.");
-            System.out.println("You hear what might be walkers in the cave behind you, and decide");
-            System.out.println("not to try and go back through it.");
-            System.out.println("There appears to be a grove just to the south of you.");
-            // currentRoom = d1;
+            System.out.println("It's too dark to really see anything.");
+            System.out.println("Deciding it is too dark, you exit the cave the way you came.");          
+            
             // need to find a way to set the player to room d1 when they enter the cave -Pat
         }
     }
@@ -363,8 +372,7 @@ public class Game
             System.out.println("You return to Castle Black, and have escaped the Walkers... for now.");
             System.out.println("GAME OVER");
             
-            Command quitGame = new Command("quit",null);
-            quit(quitGame);
+            System.exit(1);
         }
     }
     
@@ -388,53 +396,44 @@ public class Game
         return sum;
     }
     
-    private int sneakCheck()
-    {
-        if (currentRoom.hasWalkers() == false) {
-           // System.out.println("There is nothing to hide from here.");
-            return 100;
-        } else {
-            int d20 = (int)(Math.random() * 20 + 1);           
-            
-            int sneakSum = d20 + modify();
-            
-            return sneakSum;
-            
-            // if (sneakSum <= 7) {              
-                // loseGame();
-            // } else {
-                // System.out.println("The White Walker does not notice you. You may proceed.");
-            // }
-        }            
-    }
-    
     private void loseGame()
     {
         System.out.println("You hear a blood curdling scream! There is no where to hide. . .");
         System.out.println("GAME OVER");
         
-        Command quitGame = new Command("quit",null);
-        quit(quitGame);
+        System.exit(1);
+    }
+    
+    private int sneakCheck()
+    {
+        int d20 = (int)(Math.random()*20+1);
         
-        //^^^ these 2 lines do not do the intended purpose. Maybe parser should be included to end the game via code?
-        // -Pat
+        int sneakSum = d20 + modify();
+        
+        return sneakSum;
     }
     
     private void walkerEncounter()
     {
-            System.out.println("There is a White Walker just ahead of you. It doesn't seem to notice you yet.");
-            System.out.println("Perhaps you could sneak past it. . . ");       
+        System.out.println("There is a White Walker just ahead of you.");
+        System.out.println("Maybe you can sneak past it. . . ");
+        
+        sneakMech();
             
-            int scv = sneakCheck();
-            
-            if (scv == 100) {
-                System.out.println("There is nothing to hide from here.");
-            } else if (scv <= 7) {
-                System.out.println("Sneak check failed!");
-                loseGame();
-            } else {
-                System.out.println();
-              
-            }
+    }
+    
+    private void sneakMech() 
+    {
+        int roll = sneakCheck();
+        System.out.println("Sneak Check: " + roll);
+        
+        if (roll <= 7) {
+            System.out.println("Sneak check failed!");
+            loseGame();
+        } else {
+            System.out.println("Sneak check successful!");
+            System.out.println("You should be able to get past it.");
+        }
     }
 }
+
