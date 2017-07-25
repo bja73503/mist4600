@@ -27,3 +27,8 @@ Sneak mechanic:
    -> false => walker is absent
 > in goRoom(), make the room the lpayer moves to run hasWalker(). If hasWalker == true, run the sneak conditional. If player does not sneak, player loses; if player types "sneak", run sneak command. 
    -> If sneak command is successful, allow player to continue. Lest, end game with loseGame()
+
+= As of 7/25 ==================================================================================================
+> item prints before description, not during item string.
+> walker prompt still not working
+>
