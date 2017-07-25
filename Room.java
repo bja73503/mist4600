@@ -20,7 +20,7 @@ public class Room
     protected String description;
     protected boolean walkers;
     protected HashMap<String, Room> exits;        // stores exits of this room.
-    protected HashMap<String,Item> items;
+    protected Item roomItem;
 
     /**
      * Create a room described "description". Initially, it has
@@ -32,7 +32,8 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<String, Room>();
-        items = new HashMap<String,Item>();
+        //items = new HashMap<String,Item>();
+        
     }
 
     /**
@@ -85,13 +86,18 @@ public class Room
 
     private String getItemString()
     {
-         String returnString = "Items:";
-        Set<String> keys = items.keySet();
-        for(String item : keys) {
-            returnString += " " + item;
-        }
-        return returnString;
+        if (hasItem() == true) {
+        String returnString = "Items:";
+        // Set<String> keys = items.keySet();
+        // for(String item : keys) {
+            // returnString += " " + item;
+        // }
         
+       System.out.print(roomItem.getName());
+        return returnString;
+        } else {
+            return "No useful items here";
+        }
     }
     
     
@@ -108,17 +114,21 @@ public class Room
     
     public void setItem(Item item)
     {
-        items.put(item.getName(),item);
+        //items.put(item.getName(),item);
+        roomItem = item;
     }
     
-    public Item getItem(String itemName)
+    public Item getItem()
     {
-        return items.get(itemName);
+        //return items.get(itemName);
+        return roomItem;
     }
     
-    public void removeItem(String itemName)
+    public void removeItem()
     {
-        items.remove(itemName);
+        //items.remove(itemName);
+        roomItem = null;
+        
     }
     
     public void enter(Command command)
@@ -126,7 +136,7 @@ public class Room
         System.out.println("Enter what?");
     }
     
-    public boolean getWalkers()
+    public boolean hasWalkers()
     {
         return walkers;
     }
@@ -139,6 +149,16 @@ public class Room
         } else {
             System.out.println("There is nothing to look at.");
         }
+    }
+    
+    public boolean hasItem()
+    {
+        if (roomItem != null) {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 }
 

@@ -1,0 +1,29 @@
+BUGS TO FIX:
+
+= As of 7/24 =================================================================================================
+> Set currentRoom = d1 if player enters cave in g4
+> Set currentRoom = g2 when new Game is started
+> Prompt for when player encounters a walker
+> Long descriptions for significant rooms
+> fix descriptions so they make sense to the user
+> when winGame() or loseGame() run, the game needs to end
+> Only have the "Items: " prompt come up if there are items to get
+> need a take method for player to take items and add them to inventory
+
+UPDATE [07.24-02]:
+IDEA: change HashMap item attribute in Room class to be just an item. That way, a room can only have one item -- because we don't have any rooms > 1 item anyway -- and thus we eleminate the need to specify the name of the Item. This would make the take(Command command) method much easier to execute. 
+> Would require reworking the declaired items in Game class.
+
+> make sure there are prompts to explain to a player when s/he has added item to inventory
+> command for listing inventory?
+
+Sneak mechanic: 
+> method for sneaking action (roll 1d20 + modifiers from items)
+> method for the sneaking conditions:
+   -> if sumSneak < 7, player loses game and game ends
+   -> if sumSneak >= 7, player successfully sneaks and may continue moving 
+> method for walker presence; boolean attribute of Room
+   -> true => walker is present
+   -> false => walker is absent
+> in goRoom(), make the room the lpayer moves to run hasWalker(). If hasWalker == true, run the sneak conditional. If player does not sneak, player loses; if player types "sneak", run sneak command. 
+   -> If sneak command is successful, allow player to continue. Lest, end game with loseGame()
